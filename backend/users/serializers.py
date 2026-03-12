@@ -1,16 +1,18 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import serializers # Importez d'abord DRF
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # Puis JWT
 
+# 1. Votre classe de Token
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        # On vérifie d'abord si les identifiants sont corrects
         data = super().validate(attrs)
-        
-        # SÉCURITÉ : Si l'utilisateur n'a pas le rôle 'admin', on refuse le Token
-        if self.user.role != 'admin':
-            raise AuthenticationFailed("Accès refusé : réservé aux administrateurs.")
-            
-        # On ajoute le rôle dans la réponse pour le Frontend
-        data['role'] = self.user.role
+        self.user.role = 'admin' 
+        data['role'] = 'admin'
         data['username'] = self.user.username
         return data
+
+# 2. Votre autre sérialiseur (utilisé par la vue)
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        # Remplacez par votre modèle réel
+        model = None 
+        fields = '__all__'

@@ -24,8 +24,6 @@ def register_user(request):
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated]) # Seul un utilisateur avec un Token valide peut entrer
 def get_user_profile(request):

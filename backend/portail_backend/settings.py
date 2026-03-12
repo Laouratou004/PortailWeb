@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt', # Pour la gestion des tokens
     'users',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,6 +146,11 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    # ... vos lignes actuelles ...
-    'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.MyTokenObtainPairSerializer', # <--- AJOUTEZ CECI
+    'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.MyTokenObtainPairSerializer',
+    # ... autres paramètres
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", # Votre port Vite
+]
+
