@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/users/Login';
 import LinkDashboard from './pages/links/LinkDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import Home from './pages/Home'; // Correction du chemin ici (enlevé le ../)
+import Home from './pages/Home'; 
 
 function App() {
   return (
