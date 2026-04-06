@@ -14,4 +14,3 @@ class User(AbstractUser):
         return f"{self.username} ({self.get_role_display()})"
     
 
-    

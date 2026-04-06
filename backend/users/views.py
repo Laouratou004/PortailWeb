@@ -1,10 +1,17 @@
-from django.shortcuts import render
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from .models import User
+from rest_framework import generics
+from .models import Link
+from .serializers import LinkSerializer
 
 @api_view(['POST'])
 @permission_classes([AllowAny]) # Tout le monde peut s'inscrire
@@ -34,3 +41,18 @@ def get_user_profile(request):
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data)
+
+
+class AdminDashboardStatsView(APIView):
+    # Cette ligne garantit que SEUL un admin peut accéder à cette vue
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        # Exemple de calculs pour votre dashboard
+        stats = {
+            'total_users': User.objects.count(),
+            'admins_count': User.objects.filter(role='admin').count(),
+            # Ajoutez d'autres statistiques ici
+        }
+        return Response(stats)
+    

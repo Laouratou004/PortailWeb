@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import get_user_profile
-
+from .views import AdminDashboardStatsView
 urlpatterns = [
     # path('register/', register_user, name='register'), # <-- ON SUPPRIME CETTE LIGNE
     
