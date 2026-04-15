@@ -9,9 +9,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from .models import User
-from rest_framework import generics
-from .models import Link
-from .serializers import LinkSerializer
 
 @api_view(['POST'])
 @permission_classes([AllowAny]) # Tout le monde peut s'inscrire

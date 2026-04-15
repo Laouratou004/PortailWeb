@@ -21,8 +21,21 @@ from django.urls import path, include
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/users/', include('users.urls')),
+    path('api/domains/', include('domains.urls')),
+   
+   
         
 ]
+
+# Cette ligne permet d'afficher les photos pendant le développement
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
