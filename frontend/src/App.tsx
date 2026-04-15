@@ -10,30 +10,29 @@ import Layout from './components/Layout';
 function App() {
   return (
     <Router>
-      {/* Ton Layout enveloppe les Routes pour afficher Navbar/Slider/Footer partout */}
-      <Layout>
-        <Routes>
-          {/* 1. PAGES PUBLIQUES */}
+      <Routes>
+        {/* --- GROUPE PUBLIQUE : Avec Navbar, Slider et Footer --- */}
+        <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/domains" element={<Domain />} />
           <Route path="/about" element={<About />} />
+          {/* Tu pourras ajouter tes routes dynamiques ici plus tard */}
+        </Route>
+        
 
-          {/* 2. ACCÈS ADMIN */}
-          <Route path="/admin-portal" element={<Login />} />
-          
-          {/* 3. DASHBOARD PROTÉGÉ */}
-          <Route path="/dashboard" element={
-              <ProtectedRoute>
-                  <LinkDashboard />
-              </ProtectedRoute>
-          } />
+        {/* --- GROUPE ADMIN : Page vide sans aucun élément public --- */}
+        <Route path="/admin-portal" element={<Login />} />
+        
+        {/* Dashboard protégé, sans barres de navigation publiques */}
+        <Route path="/dashboard" element={
+            <ProtectedRoute>
+                <LinkDashboard />
+            </ProtectedRoute>
+        } />
 
-          {/* 4. REDIRECTION PAR DÉFAUT */}
-          <Route path="*" element={<Navigate to="/" />} />
-
-          {/* Note : Les routes dynamiques pour les sous-catégories et les détails de service seront à ajouter plus tard, une fois que tu auras les données du backend. */  }
-        </Routes>
-      </Layout>
+        {/* Redirection automatique pour les erreurs 404 */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </Router>
   );
 }
