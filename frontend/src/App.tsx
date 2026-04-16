@@ -2,23 +2,28 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/users/Login';
 import LinkDashboard from './pages/links/LinkDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import Home from './pages/Home'; 
+import Home from './pages/Home';
+import Layout from './components/Layout';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* 1. LA PAGE PUBLIQUE (Accueil) */}
-        <Route path="/" element={<Home />} />
+        {/* 1. LA PAGE PUBLIQUE — enveloppée dans Layout (navbar + slider + footer) */}
+        <Route path="/" element={
+          <Layout>
+            <Home />
+          </Layout>
+        } />
 
         {/* 2. L'ACCÈS ADMIN (Login) */}
         <Route path="/admin-portal" element={<Login />} />
-        
+
         {/* 3. LE DASHBOARD (Protégé) */}
         <Route path="/dashboard" element={
-            <ProtectedRoute>
-                <LinkDashboard />
-            </ProtectedRoute>
+          <ProtectedRoute>
+            <LinkDashboard />
+          </ProtectedRoute>
         } />
 
         {/* 4. SÉCURITÉ : Si l'URL n'existe pas, on revient à l'accueil public */}

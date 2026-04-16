@@ -131,6 +131,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Dossier pour les fichiers uploadés (photos des ressources)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -152,8 +156,22 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", # Votre port Vite
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
+]
+
+# Autorise les cookies et headers d'authentification dans les requêtes cross-origin
+CORS_ALLOW_CREDENTIALS = True
+
+# Headers autorisés explicitement (nécessaire pour le header Authorization JWT)
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'origin',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 
