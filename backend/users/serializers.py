@@ -1,6 +1,7 @@
 from rest_framework import serializers # Importez d'abord DRF
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # Puis JWT
 from rest_framework import serializers
+from .models import User
 # 1. la classe de Token
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -14,7 +15,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         # Remplacez par votre modèle réel
-        model = None 
+        model = User
         fields = '__all__'
 
 
