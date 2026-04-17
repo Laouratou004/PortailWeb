@@ -59,8 +59,9 @@ const Home: React.FC = () => {
                       src={cat.image_url || DEFAULT_IMAGE}
                       alt={cat.name}
                       className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-125"
+                      onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_IMAGE; }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#060B1A] via-[#060B1A]/40 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#060B1A] via-[#060B1A]/20 to-transparent" />
                   </div>
 
                   <div className="relative h-full p-10 flex flex-col justify-between items-start text-white z-10 text-left">

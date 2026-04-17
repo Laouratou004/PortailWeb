@@ -75,6 +75,7 @@ const Domain = () => {
                   src={cat.image_url || DEFAULT_IMAGE}
                   alt={cat.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_IMAGE; }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#060B1A]/80 via-transparent to-transparent" />
 
