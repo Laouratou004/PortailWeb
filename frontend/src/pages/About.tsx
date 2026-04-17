@@ -1,5 +1,4 @@
-import React from 'react';
-import { ShieldCheck, Users, Cpu, Target, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Users, Cpu } from 'lucide-react';
 
 const About = () => {
   return (

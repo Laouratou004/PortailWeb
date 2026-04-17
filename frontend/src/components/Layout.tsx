@@ -1,20 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom'; // Ajout de Outlet ici
+import { Link, useLocation, Outlet } from 'react-router-dom';
+import axios from 'axios';
 
-const ads = [
-  { image: "https://images.unsplash.com/photo-1557683316-973673baf926", title: "Simplifiez vos démarches", subtitle: "Accédez à plus de 50 services publics" },
-  { image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa", title: "La Guinée Numérique", subtitle: "L'administration à portée de main" }
+interface Ad {
+  id: number;
+  title: string;
+  subtitle: string;
+  image_url: string;
+}
+
+const FALLBACK_ADS: Ad[] = [
+  { id: 0, title: "Portail Officiel", subtitle: "Accédez aux services de l'État guinéen", image_url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600" },
 ];
 
-// On retire la prop { children } car React Router va injecter les pages via <Outlet />
 const Layout: React.FC = () => {
+  const [ads, setAds] = useState<Ad[]>(FALLBACK_ADS);
   const [currentAd, setCurrentAd] = useState(0);
   const location = useLocation();
 
   useEffect(() => {
+    axios.get('/api/ads/')
+      .then(res => { if (res.data.length > 0) setAds(res.data); })
+      .catch(() => {}); // garde le fallback en cas d'erreur
+  }, []);
+
+  useEffect(() => {
+    if (ads.length <= 1) return;
     const timer = setInterval(() => setCurrentAd((prev) => (prev + 1) % ads.length), 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [ads.length]);
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
@@ -54,26 +68,50 @@ const Layout: React.FC = () => {
         </div>
       </header>
 
-      {/* 2. PUB (Sert de fond à la Navbar) */}
+      {/* 2. SLIDER PUBLICITAIRE */}
       <section className="relative h-[600px] bg-[#060B1A] overflow-hidden">
-        <img 
-          src={ads[currentAd].image} 
-          className="w-full h-full object-cover opacity-40 scale-105 transition-transform duration-[5000ms]" 
-          alt="Publicité" 
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-gray-50" />
-        
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-6 text-center">
+        {/* Image de fond avec transition */}
+        {ads.map((ad, i) => (
+          <img
+            key={ad.id}
+            src={ad.image_url}
+            className={`absolute inset-0 w-full h-full object-cover opacity-40 scale-105 transition-all duration-1000 ${
+              i === currentAd ? 'opacity-40 z-10' : 'opacity-0 z-0'
+            }`}
+            alt={ad.title}
+          />
+        ))}
+
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-gray-50 z-20" />
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-6 text-center z-30">
           <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em] mb-4">Portail Officiel</span>
-          <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-4 drop-shadow-2xl">
-            {ads[currentAd].title}
+          <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-4 drop-shadow-2xl transition-all duration-500">
+            {ads[currentAd]?.title}
           </h2>
-          <p className="text-lg opacity-80 font-medium italic max-w-xl">{ads[currentAd].subtitle}</p>
+          <p className="text-lg opacity-80 font-medium italic max-w-xl transition-all duration-500">
+            {ads[currentAd]?.subtitle}
+          </p>
         </div>
+
+        {/* Points de navigation */}
+        {ads.length > 1 && (
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+            {ads.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentAd(i)}
+                className={`transition-all duration-300 rounded-full ${
+                  i === currentAd ? 'w-8 h-2 bg-blue-500' : 'w-2 h-2 bg-white/40 hover:bg-white/70'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 3. CORPS DE LA PAGE (Surélevé) */}
-      <main className="relative z-20 -mt-24 max-w-7xl mx-auto px-4">
+      <main className="relative z-40 -mt-24 max-w-7xl mx-auto px-4">
         <div className="bg-white rounded-[50px] p-8 md:p-20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-gray-100 min-h-[400px]">
           {/* CRITIQUE : L'Outlet est ce qui permet d'afficher Home, Domain, etc. sans erreur TypeScript */}
           <Outlet /> 

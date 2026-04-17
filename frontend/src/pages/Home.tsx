@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import { ChevronRight, Book, Plus, LayoutGrid, Info, Search, Home as HomeIcon } from 'lucide-react';
 
-// Fonction utilitaire pour les icônes (si tu en as besoin dans tes cartes)
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800";
+
 const getIcon = (iconName: string) => {
   const icons: { [key: string]: React.ReactNode } = {
     book: <Book size={24} />,
@@ -19,7 +20,6 @@ const getIcon = (iconName: string) => {
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);
 
-  // On récupère uniquement les domaines (catégories) depuis le backend
   useEffect(() => {
     axios.get('/api/domains/categories/')
       .then(res => setCategories(res.data))
@@ -28,20 +28,16 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {/* Note : Le Slider Publicitaire et la Navbar sont déjà dans Layout.tsx. 
-          Ce contenu s'affichera directement dans la zone {children}.
-      */}
-      
       <section className="text-center">
         {/* En-tête de bienvenue */}
-        <div className="inline-block px-4 py-1 bg-blue-50 text-[#1D4ED8] font-black uppercase tracking-[0.3em] mb-8">
+        <div className="inline-block px-4 py-1 bg-blue-50 text-[#1D4ED8] font-black uppercase tracking-[0.3em] mb-8 text-[10px] rounded-full">
           République de Guinée
         </div>
-        
+
         <h3 className="text-6xl font-black text-[#111827] mb-6 tracking-tighter uppercase italic">
           Bienvenue
         </h3>
-        
+
         <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed mb-20 font-medium">
           Accédez à l'ensemble des services publics et ressources numériques de l'État en un seul point d'entrée sécurisé.
         </p>
@@ -59,28 +55,28 @@ const Home: React.FC = () => {
               <Link key={cat.id} to={`/domaine/${cat.id}`}>
                 <div className="group relative h-[400px] rounded-[3.5rem] overflow-hidden shadow-2xl cursor-pointer transition-all duration-700 hover:-translate-y-4">
                   <div className="absolute inset-0">
-                    <img 
-                      src={cat.image_url || "https://images.unsplash.com/photo-1523050335102-c3251c447ffb"} 
-                      alt={cat.name} 
-                      className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-125" 
+                    <img
+                      src={cat.image_url || DEFAULT_IMAGE}
+                      alt={cat.name}
+                      className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-125"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#060B1A] via-[#060B1A]/40 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
                   </div>
-                  
+
                   <div className="relative h-full p-10 flex flex-col justify-between items-start text-white z-10 text-left">
                     <div className="bg-white/20 backdrop-blur-xl p-4 rounded-2xl border border-white/20 group-hover:bg-[#1D4ED8] group-hover:border-[#1D4ED8] transition-all">
                       {getIcon(cat.icon_name)}
                     </div>
-                    
+
                     <div className="w-full">
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-400 mb-2">
-                        {cat.links?.length || 0} services
+                        {cat.subcategories?.length || 0} sous-domaines · {cat.total_links || 0} services
                       </p>
                       <h4 className="text-4xl font-black tracking-tighter uppercase italic mb-6 leading-none">
                         {cat.name}
                       </h4>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-black uppercase tracking-widest text-white/70">Voir plus</span>
+                        <span className="text-xs font-black uppercase tracking-widest text-white/70">Explorer</span>
                         <ChevronRight size={18} className="text-[#1D4ED8]" />
                       </div>
                     </div>
@@ -89,16 +85,16 @@ const Home: React.FC = () => {
               </Link>
             ))
           ) : (
-            <p className="text-gray-400 italic col-span-full py-10">Connexion aux services nationaux...</p>
+            <p className="text-gray-400 italic col-span-full py-10 animate-pulse">Connexion aux services nationaux...</p>
           )}
         </div>
 
         <div className="mt-20 flex justify-center">
           <Link to="/domains">
-              <button className="group flex items-center gap-4 bg-[#111827] text-white px-10 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-[#1D4ED8] transition-all shadow-xl">
-                Explorer tous les Domaines
-                <ChevronRight size={18} className="group-hover:translate-x-2 transition-transform" />
-              </button>
+            <button className="group flex items-center gap-4 bg-[#111827] text-white px-10 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-[#1D4ED8] transition-all shadow-xl">
+              Explorer tous les Domaines
+              <ChevronRight size={18} className="group-hover:translate-x-2 transition-transform" />
+            </button>
           </Link>
         </div>
       </section>

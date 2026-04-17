@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Ad
 
-# Register your models here.
+@admin.register(Ad)
+class AdAdmin(admin.ModelAdmin):
+    list_display = ['title', 'order', 'is_active', 'created_at']
+    list_editable = ['order', 'is_active']
+    list_filter = ['is_active']

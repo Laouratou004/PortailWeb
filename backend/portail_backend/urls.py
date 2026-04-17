@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/users/', include('users.urls')),
     path('api/domains/', include('domains.urls')),
+    path('api/ads/', include('ads.urls')),
 ]
 
 # Sert les fichiers uploadés (photos) en mode développement

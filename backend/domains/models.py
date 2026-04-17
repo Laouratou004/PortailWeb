@@ -3,8 +3,8 @@ from django.db import models
 # 1. LE DOMAINE (ex: Santé, Éducation)
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    # On ajoute un champ pour l'icône si tu veux changer l'icône plus tard
-    icon_name = models.CharField(max_length=50, default="LayoutGrid")
+    icon_name = models.CharField(max_length=50, default="grid")
+    image_url = models.URLField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
