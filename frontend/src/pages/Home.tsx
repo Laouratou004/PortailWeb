@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { cachedGet } from '../services/cache';
 import { ChevronRight, Book, Plus, LayoutGrid, Info, Search, Home as HomeIcon } from 'lucide-react';
 
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800";
@@ -21,9 +21,9 @@ const Home: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    axios.get('/api/domains/categories/')
-      .then(res => setCategories(res.data))
-      .catch(err => console.error("Erreur de chargement des catégories:", err));
+    cachedGet('/api/domains/categories/')
+      .then((data: any[]) => setCategories(data))
+      .catch((err: any) => console.error("Erreur de chargement des catégories:", err));
   }, []);
 
   return (
@@ -58,6 +58,7 @@ const Home: React.FC = () => {
                     <img
                       src={cat.image_url || DEFAULT_IMAGE}
                       alt={cat.name}
+                      loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-125"
                       onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_IMAGE; }}
                     />

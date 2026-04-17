@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { cachedGet } from '../../services/cache';
 import { Book, Plus, LayoutGrid, Info, Search, Home as HomeIcon, ArrowRight, Layers } from 'lucide-react';
 
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600";
@@ -22,9 +22,9 @@ const Domain = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get('/api/domains/categories/')
-      .then(res => setCategories(res.data))
-      .catch(err => console.error("Erreur Backend:", err));
+    cachedGet('/api/domains/categories/')
+      .then((data: any[]) => setCategories(data))
+      .catch((err: any) => console.error("Erreur Backend:", err));
   }, []);
 
   const filteredDomains = categories.filter(cat =>
@@ -74,6 +74,7 @@ const Domain = () => {
                 <img
                   src={cat.image_url || DEFAULT_IMAGE}
                   alt={cat.name}
+                  loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_IMAGE; }}
                 />

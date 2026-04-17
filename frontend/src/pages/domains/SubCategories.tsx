@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ChevronRight, ArrowLeft, Layers, ExternalLink, FolderOpen } from 'lucide-react';
+import { ChevronRight, ArrowLeft, Layers, ExternalLink, FolderOpen, Loader2 } from 'lucide-react';
 
 interface ResourceLink {
   id: number;
@@ -32,6 +32,7 @@ const SubCategories = () => {
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<number | null>(null);
+  const [openingLink, setOpeningLink] = useState<number | null>(null);
 
   useEffect(() => {
     if (!categoryId) return;
@@ -172,18 +173,25 @@ const SubCategories = () => {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => {
+                            setOpeningLink(link.id);
+                            setTimeout(() => setOpeningLink(null), 4000);
+                          }}
                           className="flex items-center justify-between p-5 bg-white rounded-2xl border border-gray-100 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-50 transition-all duration-300 group/link"
                         >
                           <div className="flex items-center gap-4 min-w-0">
-                            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 group-hover/link:bg-blue-600 transition-colors">
-                              <ExternalLink size={16} className="text-blue-600 group-hover/link:text-white transition-colors" />
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${openingLink === link.id ? 'bg-blue-600' : 'bg-blue-50 group-hover/link:bg-blue-600'}`}>
+                              {openingLink === link.id
+                                ? <Loader2 size={16} className="text-white animate-spin" />
+                                : <ExternalLink size={16} className="text-blue-600 group-hover/link:text-white transition-colors" />
+                              }
                             </div>
                             <div className="min-w-0">
                               <p className="font-bold text-[#111827] text-sm group-hover/link:text-blue-600 transition-colors truncate">
                                 {link.name}
                               </p>
-                              <p className="text-blue-400 text-xs truncate mt-0.5 font-medium group-hover/link:text-blue-600 transition-colors">
-                                {link.url}
+                              <p className={`text-xs truncate mt-0.5 font-medium transition-colors ${openingLink === link.id ? 'text-blue-600' : 'text-blue-400 group-hover/link:text-blue-600'}`}>
+                                {openingLink === link.id ? 'Ouverture en cours...' : link.url}
                               </p>
                             </div>
                           </div>
