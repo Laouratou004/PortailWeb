@@ -7,7 +7,7 @@ class LinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Link
-        fields = ['id', 'title', 'url', 'description', 'category', 'created_at']
+        fields = ['id', 'title', 'url', 'category', 'created_at']
 
 class CategorySerializer(serializers.ModelSerializer):
     # Pour l'affichage, on montre les détails des liens
