@@ -1,34 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import axios from 'axios';
+import AdsSidebar from './AdsSidebar';
 
-interface Ad {
+interface BannerSlide {
   id: number;
+  category: string;
   title: string;
   subtitle: string;
   image_url: string;
 }
 
-const FALLBACK_ADS: Ad[] = [
-  { id: 0, title: "Portail Officiel", subtitle: "Accédez aux services de l'État guinéen", image_url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600" },
+const PORTAL_SLIDES: BannerSlide[] = [
+  {
+    id: 1,
+    category: "Guichet Unique Citoyen",
+    title: "Portail Web National",
+    subtitle: "Votre point d'accès centralisé et sécurisé pour accomplir toutes vos démarches administratives officielles en quelques clics.",
+    image_url: "https://images.unsplash.com/photo-1521737711867-e3b904737d88?w=1600"
+  },
+  {
+    id: 2,
+    category: "Domaines & Secteurs",
+    title: "10 Secteurs d'Intervention",
+    subtitle: "Explorez nos rubriques thématiques regroupant la Santé, l'Éducation, les Transports et l'Énergie pour trouver vos services.",
+    image_url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600"
+  },
+  {
+    id: 3,
+    category: "Inclusivité & Accessibilité",
+    title: "L'Administration Connectée",
+    subtitle: "Une plateforme conçue pour tous les citoyens guinéens, garantissant un accès égalitaires aux services publics sur tout le territoire.",
+    image_url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1600"
+  },
+  {
+    id: 4,
+    category: "Sécurité & Transparence",
+    title: "Échanges 100% Protégés",
+    subtitle: "Bénéficiez d'une protection rigoureuse de vos données personnelles et d'un suivi transparent pour chaque demande soumise.",
+    image_url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1600"
+  }
 ];
 
 const Layout: React.FC = () => {
-  const [ads, setAds] = useState<Ad[]>(FALLBACK_ADS);
-  const [currentAd, setCurrentAd] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const location = useLocation();
 
   useEffect(() => {
-    axios.get('/api/ads/')
-      .then(res => { if (res.data.length > 0) setAds(res.data); })
-      .catch(() => {}); // garde le fallback en cas d'erreur
-  }, []);
-
-  useEffect(() => {
-    if (ads.length <= 1) return;
-    const timer = setInterval(() => setCurrentAd((prev) => (prev + 1) % ads.length), 5000);
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % PORTAL_SLIDES.length);
+    }, 5000);
     return () => clearInterval(timer);
-  }, [ads.length]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
@@ -68,53 +90,64 @@ const Layout: React.FC = () => {
         </div>
       </header>
 
-      {/* 2. SLIDER PUBLICITAIRE */}
+      {/* 2. SLIDER DE LA BANNIÈRE (Professionnel et Institutionnel) */}
       <section className="relative h-[600px] bg-[#060B1A] overflow-hidden">
         {/* Image de fond avec transition */}
-        {ads.map((ad, i) => (
+        {PORTAL_SLIDES.map((slide, i) => (
           <img
-            key={ad.id}
-            src={ad.image_url}
-            className={`absolute inset-0 w-full h-full object-cover opacity-40 scale-105 transition-all duration-1000 ${
-              i === currentAd ? 'opacity-40 z-10' : 'opacity-0 z-0'
+            key={slide.id}
+            src={slide.image_url}
+            className={`absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-1000 ${
+              i === currentSlide ? 'opacity-40 z-10' : 'opacity-0 z-0'
             }`}
-            alt={ad.title}
+            alt={slide.title}
           />
         ))}
 
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-gray-50 z-20" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-6 text-center z-30">
-          <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em] mb-4">Portail Officiel</span>
-          <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-4 drop-shadow-2xl transition-all duration-500">
-            {ads[currentAd]?.title}
+          <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em] mb-4">
+            {PORTAL_SLIDES[currentSlide]?.category}
+          </span>
+          <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-4 drop-shadow-2xl transition-all duration-500 animate-fade-in">
+            {PORTAL_SLIDES[currentSlide]?.title}
           </h2>
           <p className="text-lg opacity-80 font-medium italic max-w-xl transition-all duration-500">
-            {ads[currentAd]?.subtitle}
+            {PORTAL_SLIDES[currentSlide]?.subtitle}
           </p>
         </div>
 
         {/* Points de navigation */}
-        {ads.length > 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30">
-            {ads.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentAd(i)}
-                className={`transition-all duration-300 rounded-full ${
-                  i === currentAd ? 'w-8 h-2 bg-blue-500' : 'w-2 h-2 bg-white/40 hover:bg-white/70'
-                }`}
-              />
-            ))}
-          </div>
-        )}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+          {PORTAL_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              className={`transition-all duration-300 rounded-full ${
+                i === currentSlide ? 'w-8 h-2 bg-blue-500' : 'w-2 h-2 bg-white/40 hover:bg-white/70'
+              }`}
+            />
+          ))}
+        </div>
       </section>
 
-      {/* 3. CORPS DE LA PAGE (Surélevé) */}
-      <main className="relative z-40 -mt-24 max-w-7xl mx-auto px-4">
-        <div className="bg-white rounded-[50px] p-8 md:p-20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-gray-100 min-h-[400px]">
-          {/* CRITIQUE : L'Outlet est ce qui permet d'afficher Home, Domain, etc. sans erreur TypeScript */}
-          <Outlet /> 
+      {/* 3. CORPS DE LA PAGE (Surélevé avec Layout flexible à double colonne) */}
+      <main className="relative z-40 -mt-24 max-w-7xl mx-auto px-4 w-full">
+        <div className="bg-white rounded-[50px] p-8 md:p-12 lg:p-16 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-gray-100 min-h-[400px]">
+          <div className="flex flex-col lg:flex-row gap-12 items-start">
+            
+            {/* Contenu principal de la page */}
+            <div className="flex-1 min-w-0 w-full">
+              <Outlet /> 
+            </div>
+            
+            {/* Sidebar Publicitaire / Partenaires */}
+            <div className="w-full lg:w-80 shrink-0 lg:border-l lg:border-gray-100 lg:pl-10">
+              <AdsSidebar />
+            </div>
+
+          </div>
         </div>
       </main>
 
