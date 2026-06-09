@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from urllib.parse import parse_qs, urlparse
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,12 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qfwssk%4e$18^sq)9oh23p2!gjdbhwu&*fohyvc1i^z1^*+7=*'
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-qfwssk%4e$18^sq)9oh23p2!gjdbhwu&*fohyvc1i^z1^*+7=*'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ('true', '1')
 
 ALLOWED_HOSTS = []
+if os.getenv('DJANGO_ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS').split(',') if host.strip()]
 
 
 # Application definition
@@ -81,16 +88,37 @@ WSGI_APPLICATION = 'portail_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'portail_db',
-        'USER': 'admin',
-        'PASSWORD': 'admin123', 
-        'HOST': 'localhost',
-        'PORT': '5433',
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    parsed_db_url = urlparse(DATABASE_URL)
+    db_options = {}
+    query = parse_qs(parsed_db_url.query)
+    sslmode = query.get('sslmode', [None])[0]
+    if sslmode:
+        db_options['sslmode'] = sslmode
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': parsed_db_url.path.lstrip('/'),
+            'USER': parsed_db_url.username,
+            'PASSWORD': parsed_db_url.password,
+            'HOST': parsed_db_url.hostname,
+            'PORT': parsed_db_url.port or '5432',
+            'OPTIONS': db_options,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'portail_db',
+            'USER': 'admin',
+            'PASSWORD': 'admin123',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -160,6 +188,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+if os.getenv('CORS_ALLOWED_ORIGINS'):
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',') if origin.strip()
+    ]
 
 # Autorise les cookies et headers d'authentification dans les requêtes cross-origin
 CORS_ALLOW_CREDENTIALS = True
@@ -175,6 +207,12 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+CSRF_TRUSTED_ORIGINS = []
+if os.getenv('CSRF_TRUSTED_ORIGINS'):
+    CSRF_TRUSTED_ORIGINS = [
+        origin.strip() for origin in os.getenv('CSRF_TRUSTED_ORIGINS').split(',') if origin.strip()
+    ]
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
