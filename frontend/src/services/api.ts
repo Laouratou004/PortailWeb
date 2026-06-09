@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// URL relative — Vite proxy redirige vers http://127.0.0.1:8000
-const API_URL = '/api/';
+// Use Vite environment variable in production, else keep relative path for local dev.
+export const API_URL = import.meta.env.VITE_API_URL ?? '/api/';
 
 export const login = async (username: string, password: string) => {
     const response = await axios.post(`${API_URL}token/`, {
