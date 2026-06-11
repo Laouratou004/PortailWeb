@@ -1,0 +1,12 @@
+Summary,Description,Issue Type,Project Key,Assignee,Reporter,Priority,Labels,Components,Due Date,Original Estimate,Epic Link
+"Backend: Prepare and configure Django backend for Render deployment","- Update backend/portail_backend/settings.py to read environment variables: DJANGO_SECRET_KEY, DATABASE_URL, CORS_ALLOWED_ORIGINS, CSRF_TRUSTED_ORIGINS.
+- Finalize backend/.env.example with examples and instructions.
+- Verify and pin backend/requirements.txt (resolve security vulnerabilities and ensure Python compatibility).
+- Ensure migrations run successfully and DATABASE_URL is configured.
+- Configure Gunicorn (WSGI) and run collectstatic; consider adding WhiteNoise for static file serving.
+- Run smoke tests and verify health endpoints and CORS/CSRF behavior.",Task,PROJECTKEY,Hadjiratou Diallo,,High,backend;deploy,Backend,,,
+"Frontend: Prepare and configure frontend for deployment","- Add frontend/.env.example with API base URL and environment flags.
+- Ensure frontend CORS origin is included in backend CORS_ALLOWED_ORIGINS and CSRF_TRUSTED_ORIGINS.
+- Add build/configuration steps for production and CI.
+- Test cross-origin requests, authentication flow, and integration with backend APIs.
+- Coordinate environment variables and domain names with backend (DNS, SSL).",Task,PROJECTKEY,Laye Oumar Condé,,Medium,frontend;deploy,Frontend,,,
