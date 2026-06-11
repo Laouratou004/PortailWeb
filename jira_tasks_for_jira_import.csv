@@ -1,12 +1,18 @@
 Summary,Description,Issue Type,Project Key,Assignee,Reporter,Priority,Labels,Components,Due Date,Original Estimate,Epic Link
-"Backend: Prepare and configure Django backend for Render deployment","- Update backend/portail_backend/settings.py to read environment variables: DJANGO_SECRET_KEY, DATABASE_URL, CORS_ALLOWED_ORIGINS, CSRF_TRUSTED_ORIGINS.
-- Finalize backend/.env.example with examples and instructions.
-- Verify and pin backend/requirements.txt (resolve security vulnerabilities and ensure Python compatibility).
-- Ensure migrations run successfully and DATABASE_URL is configured.
-- Configure Gunicorn (WSGI) and run collectstatic; consider adding WhiteNoise for static file serving.
-- Run smoke tests and verify health endpoints and CORS/CSRF behavior.",Task,PROJECTKEY,Hadjiratou Diallo,,High,backend;deploy,Backend,,,
-"Frontend: Prepare and configure frontend for deployment","- Add frontend/.env.example with API base URL and environment flags.
-- Ensure frontend CORS origin is included in backend CORS_ALLOWED_ORIGINS and CSRF_TRUSTED_ORIGINS.
-- Add build/configuration steps for production and CI.
-- Test cross-origin requests, authentication flow, and integration with backend APIs.
-- Coordinate environment variables and domain names with backend (DNS, SSL).",Task,PROJECTKEY,Laye Oumar Condé,,Medium,frontend;deploy,Frontend,,,
+"BE: Env & settings – centraliser variables","Mettre à jour `backend/portail_backend/settings.py` pour lire toutes les variables d'environnement nécessaires (DJANGO_SECRET_KEY, DJANGO_DEBUG, DJANGO_ALLOWED_HOSTS, DATABASE_URL, CORS_ALLOWED_ORIGINS, CSRF_TRUSTED_ORIGINS). Compléter `backend/.env.example` avec des exemples et instructions.",Task,POR,Hadjiratou Diallo,,High,backend;config,Backend,,2w,
+"BE: Auth JWT & endpoints","Implémenter l'authentification JWT (djangorestframework-simplejwt). Créer endpoints pour obtention/refresh token et serializer personnalisé si nécessaire.",Task,POR,Hadjiratou Diallo,,High,backend;auth,Backend,,1w,
+"BE: Users CRUD & permissions","Implémenter CRUD pour `User` avec gestion des rôles (admin/editor/viewer). Ajouter validations et tests unitaires.",Task,POR,Hadjiratou Diallo,,High,backend;users,Backend,,1w,
+"BE: Domains CRUD","Implémenter API CRUD pour `domains` (modèles, serializers, views), ajouter tests et documentation minimale.",Task,POR,Hadjiratou Diallo,,Medium,backend;domains,Backend,,1w,
+"BE: Links & Categories","Finaliser `links` et `categories` : models, serializers (incluant nested LinkSerializer/CategorySerializer), views et permissions. S'assurer que la relation category ↔ link fonctionne.",Task,POR,Hadjiratou Diallo,,Medium,backend;links,Backend,,1w,
+"BE: Ads CRUD","Implémenter API CRUD pour `ads` (image handling, serializers), ajouter tests et validations.",Task,POR,Hadjiratou Diallo,,Medium,backend;ads,Backend,,1w,
+"BE: Database & migrations","Vérifier le schéma PostgreSQL, exécuter toutes les migrations, ajouter script d'initialisation si besoin et endpoint health minimal pour monitoring.",Task,POR,Hadjiratou Diallo,,High,backend;db,Backend,,3d,
+"BE: Requirements audit & sécurité","Exécuter `pip-audit`, résoudre vulnérabilités, verrouiller versions dans `backend/requirements.txt` et documenter changements.",Task,POR,Hadjiratou Diallo,,High,backend;security,Backend,,3d,
+"BE: Tests unitaires et intégration","Écrire tests unitaires pour modèles, serializers et vues ; tests d'intégration pour parcours critiques (auth → CRUD).",Task,POR,Hadjiratou Diallo,,High,backend;tests,Backend,,1w,
+"FE: Env example & API config","Ajouter `frontend/.env.example` avec la variable `VITE_API_BASE_URL` et instructions pour les environnements (dev/staging/prod).",Task,POR,Laye Oumar Condé,,Medium,frontend;config,Frontend,,3d,
+"FE: Auth flow & integration","Implémenter le flux d'authentification sur le frontend (login, token storage, refresh) et intégrer avec les endpoints backend.",Task,POR,Laye Oumar Condé,,High,frontend;auth,Frontend,,1w,
+"FE: Pages principales et composants","Construire les pages `Home`, `Domains`, `Links`, `Users` et composants réutilisables (List, Card, Form). Assurer responsive design.",Task,POR,Laye Oumar Condé,,High,frontend;ui,Frontend,,2w,
+"FE: API integration & CORS tests","Intégrer tous les appels API (list/create/update/delete) et tester cross-origin requests avec le backend (CORS_ALLOWED_ORIGINS).",Task,POR,Laye Oumar Condé,,High,frontend;integration,Frontend,,1w,
+"FE: Tests front (unit & e2e)","Écrire tests unitaires pour composants (testing-library) et tests end-to-end pour parcours utilisateur critiques.",Task,POR,Laye Oumar Condé,,Medium,frontend;tests,Frontend,,1w,
+"Coordination: Documenter variables et process","Rédiger la documentation d'installation locale (README) incluant variables d'environnement et commandes d'initialisation pour backend et frontend.",Task,POR,Hadjiratou Diallo,,Medium,documentation,General,,3d,
+"Coordination: Revue sécurité & QA","Organiser une revue conjointe backend/frontend pour valider corrections de vulnérabilités, tests et points ouverts.",Task,POR,Hadjiratou Diallo,,Medium,coordination,General,,2d,
+
