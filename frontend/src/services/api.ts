@@ -24,5 +24,3 @@ export const getAds = async () => {
     const response = await axios.get(`${API_URL}ads/`);
     return response.data;
 };
-
-export { API_URL };
