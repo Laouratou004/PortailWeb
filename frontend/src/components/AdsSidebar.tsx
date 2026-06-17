@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronRight } from 'lucide-react';
+import { API_URL } from '../services/api';
 
 interface Ad {
   id: number;
@@ -14,7 +15,7 @@ const AdsSidebar: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/api/ads/')
+    axios.get(`${API_URL}ads/`)
       .then(res => {
         setAds(Array.isArray(res.data) ? res.data : []);
       })

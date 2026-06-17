@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { cachedGet } from '../services/cache';
+import { API_URL } from '../services/api';
 import { ChevronRight, Book, Plus, LayoutGrid, Info, Search, Home as HomeIcon } from 'lucide-react';
 
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800";
@@ -21,7 +22,7 @@ const Home: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    cachedGet('/api/domains/categories/')
+    cachedGet(`${API_URL}domains/categories/`)
       .then((data: any[]) => setCategories(data))
       .catch((err: any) => console.error("Erreur de chargement des catégories:", err));
   }, []);
