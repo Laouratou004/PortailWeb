@@ -88,7 +88,15 @@ WSGI_APPLICATION = 'portail_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+# Use a local SQLite database in development by default.
+# In production, set DJANGO_ENV=production and DATABASE_URL for the deployed PostgreSQL database.
+DJANGO_ENV = os.getenv('DJANGO_ENV', 'development').lower()
+DJANGO_USE_REMOTE_DB = os.getenv('DJANGO_USE_REMOTE_DB', 'false').lower() in ('true', '1')
+
+DATABASE_URL = None
+if DJANGO_ENV == 'production' or DJANGO_USE_REMOTE_DB:
+    DATABASE_URL = os.getenv('DATABASE_URL')
+
 if DATABASE_URL:
     parsed_db_url = urlparse(DATABASE_URL)
     db_options = {}

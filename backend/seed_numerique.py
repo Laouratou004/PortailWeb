@@ -19,44 +19,44 @@ data = [
         "Operateurs mobiles et Internet en Guinee",
         [
             ("Orange Guinee",    "Operateur mobile leader en Guinee",                 "https://www.orange-guinee.com"),
-            ("MTN Guinee",       "Reseau mobile MTN, couverture nationale",            "https://www.mtn.gn"),
-            ("ANPTIC",           "Agence Nationale de Promotion des TIC",              "http://www.anptic.gov.gn"),
+            ("MTN Guinée",       "Couverture mobile nationale.",            "https://www.mtn.com/"),
+            ("ANPTIC",           "Agence nationale du numérique et des TIC.",              "https://www.gouvernement.gov.gn"),
         ]
     ),
     (
         "Services en Ligne",
         "Demarches administratives numeriques de l'Etat",
         [
-            ("Portail e-Gouvernement", "Acces aux services publics en ligne",          "http://www.gouvernement.gov.gn"),
-            ("Ministere des TIC",      "Ministere des Postes et Economie Numerique",   "http://www.mpten.gov.gn"),
-            ("ANAFCI en Ligne",        "Etat civil et identification numerique",        "http://www.anafci.gov.gn"),
+            ("Portail e-Gouvernement", "Accès aux services publics en ligne.",          "https://www.gouvernement.gov.gn"),
+            ("Ministère des TIC",      "Ministère des Postes et Économie Numérique.",   "https://www.gouvernement.gov.gn"),
+            ("ANAFCI en Ligne",        "État civil et identification numérique.",        "https://www.gouvernement.gov.gn"),
         ]
     ),
     (
         "Cybersecurite",
         "Protection des donnees et securite informatique",
         [
-            ("ANPTIC Cybersecurite",  "Veille et alertes en cybersecurite",            "http://www.anptic.gov.gn"),
-            ("CERT Guinee",           "Centre de reponse aux incidents informatiques",  "http://www.anptic.gov.gn/cert"),
-            ("Protection des Donnees","Commission nationale de protection des donnees", "http://www.mpten.gov.gn"),
+            ("ANPTIC Cybersécurité",  "Veille et alertes en cybersécurité.",            "https://www.gouvernement.gov.gn"),
+            ("CERT Guinée",           "Centre de réponse aux incidents informatiques.",  "https://www.gouvernement.gov.gn"),
+            ("Protection des Données","Commission nationale de protection des données.", "https://www.gouvernement.gov.gn"),
         ]
     ),
     (
         "Formation Numerique",
         "Centres de formation aux metiers du numerique",
         [
-            ("ANPTIC Formation",   "Programmes de formation aux TIC",                   "http://www.anptic.gov.gn/formation"),
-            ("Ecole du Numerique", "Formation professionnelle aux metiers du digital",   "http://www.mpten.gov.gn"),
-            ("Google Afrique",     "Ressources numeriques et formations Google",         "https://grow.google/intl/fr_fr/"),
+            ("ANPTIC Formation",   "Programmes de formation aux TIC.",                   "https://www.gouvernement.gov.gn"),
+            ("École du Numérique", "Formation professionnelle aux métiers du digital.",   "https://www.gouvernement.gov.gn"),
+            ("Google Afrique",     "Ressources numériques et formations Google.",         "https://grow.google/intl/fr_fr/"),
         ]
     ),
     (
         "Infrastructures Numeriques",
         "Reseaux, fibre optique et datacenters nationaux",
         [
-            ("GUILAB",             "Laboratoire national d'innovation numerique",        "http://www.anptic.gov.gn"),
-            ("Fibre Optique GN",   "Reseau national de fibre optique de Guinee",        "http://www.mpten.gov.gn"),
-            ("Datacenter National","Infrastructure d'hebergement de l'Etat guineen",    "http://www.anptic.gov.gn"),
+            ("GUILAB",             "Laboratoire national d'innovation numérique.",        "https://www.gouvernement.gov.gn"),
+            ("Fibre Optique GN",   "Réseau national de fibre optique de Guinée.",        "https://www.gouvernement.gov.gn"),
+            ("Datacenter National","Infrastructure d'hébergement de l'État guinéen.",    "https://www.gouvernement.gov.gn"),
         ]
     ),
 ]
@@ -75,7 +75,7 @@ for sub_name, sub_desc, links in data:
         print(f"  + Sous-domaine: {sub_name}")
 
     for lname, ldesc, lurl in links:
-        rl, c2 = ResourceLink.objects.get_or_create(
+        rl, c2 = ResourceLink.objects.update_or_create(
             subcategory=sub,
             name=lname,
             defaults={"description": ldesc, "url": lurl}
@@ -83,5 +83,7 @@ for sub_name, sub_desc, links in data:
         if c2:
             created_links += 1
             print(f"      - {lname}")
+        else:
+            print(f"      - {lname} mis à jour")
 
 print(f"\n{created_subs} sous-domaines et {created_links} services ajoutes dans '{cat.name}'")

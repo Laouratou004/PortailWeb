@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import AdsSidebar from './AdsSidebar';
+import PartnerPopup, { PARTNER_POPUPS, type PartnerPopupData } from './PartnerPopup';
 
 interface BannerSlide {
   id: number;
@@ -43,7 +44,18 @@ const PORTAL_SLIDES: BannerSlide[] = [
 
 const Layout: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showPopup, setShowPopup] = useState(true);
+  const [featuredPartner, setFeaturedPartner] = useState<PartnerPopupData | null>(null);
   const location = useLocation();
+
+  const partnerToShow = useMemo(() => {
+    if (featuredPartner) return featuredPartner;
+    return PARTNER_POPUPS[Math.floor(Math.random() * PARTNER_POPUPS.length)];
+  }, [featuredPartner]);
+
+  useEffect(() => {
+    setFeaturedPartner(PARTNER_POPUPS[Math.floor(Math.random() * PARTNER_POPUPS.length)]);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -54,6 +66,12 @@ const Layout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
+      {showPopup && featuredPartner && (
+        <PartnerPopup
+          partner={partnerToShow}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
       
       {/* 1. NAVBAR TRANSPARENTE  */}
       <header className="absolute top-0 left-0 w-full z-[100] px-12 py-10 bg-transparent">

@@ -4,7 +4,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portail_backend.settings')
 django.setup()
 
-from domains.models import Category
+from domains.models import Category, SubCategory, ResourceLink
 from ads.models import Ad
 from django.contrib.auth import get_user_model
 
@@ -82,19 +82,209 @@ for cat_data in categories_data:
     else:
         print(f"Catégorie '{cat.name}' existe déjà.")
 
-# 3. Création de quelques publicités (Ads)
+# 3. Création des sous-domaines et liens associés
+category_resources = {
+    "Numérique": [
+        (
+            "Télécommunications",
+            "Opérateurs mobiles et Internet en Guinée",
+            [
+                ("Orange Guinée", "Opérateur mobile leader en Guinée.", "https://www.orange-guinee.com"),
+                ("MTN Guinée", "Couverture mobile nationale.", "https://www.mtn.com/"),
+                ("ANPTIC", "Agence nationale du numérique et des TIC.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+        (
+            "Services en Ligne",
+            "Démarches administratives numériques de l'État.",
+            [
+                ("Portail e-Gouvernement", "Accès aux services publics en ligne.", "https://www.gouvernement.gov.gn"),
+                ("Ministère des TIC", "Ministère des Postes et de l'Économie Numérique.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+    ],
+    "Santé": [
+        (
+            "Hôpitaux",
+            "Hôpitaux et centres médicaux clés en Guinée.",
+            [
+                ("Hôpital National Ignace Deen", "Soins médicaux spécialisés à Conakry.", "https://sante.gov.gn"),
+                ("Clinique Pasteur", "Soins ambulatoires et urgences.", "https://sante.gov.gn"),
+            ]
+        ),
+        (
+            "Prévention",
+            "Ressources de santé publique et de prévention.",
+            [
+                ("Ministère de la Santé", "Informations et actus santé.", "https://sante.gov.gn"),
+            ]
+        ),
+    ],
+    "Éducation": [
+        (
+            "Enseignement supérieur",
+            "Universités et grandes écoles guinéennes.",
+            [
+                ("Université de Conakry", "Informations sur les études supérieures.", "https://www.gouvernement.gov.gn"),
+                ("Institut Supérieur des Mines", "Formations techniques et ingénierie.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+        (
+            "Éducation en ligne",
+            "Ressources numériques pour les étudiants.",
+            [
+                ("ANPTIC Formation", "Programmes de formation aux TIC.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+    ],
+    "Transports": [
+        (
+            "Transport routier",
+            "Routes, bus et logistique nationale.",
+            [
+                ("Office National des Transports", "Gestion des transports en Guinée.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+        (
+            "Aéroports",
+            "Informations de voyage et services aéroportuaires.",
+            [
+                ("Aéroport International de Conakry", "Vols et services passagers.", "https://tourisme.gov.gn"),
+            ]
+        ),
+    ],
+    "Agriculture": [
+        (
+            "Production agricole",
+            "Filières agricoles et coopératives locales.",
+            [
+                ("Ministère de l'Agriculture", "Soutien aux exploitants agricoles.", "https://agriculture.gov.gn"),
+            ]
+        ),
+        (
+            "Marchés agricoles",
+            "Accès aux marchés et aux produits nationaux.",
+            [
+                ("Marchés agricoles guinéens", "Offres et contacts des marchés.", "https://agriculture.gov.gn"),
+            ]
+        ),
+    ],
+    "Justice": [
+        (
+            "Justice civile",
+            "Tribunaux et services judiciaires.",
+            [
+                ("Ministère de la Justice", "Services et actualités juridiques.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+        (
+            "Droits et assistance",
+            "Aide juridique et protection des droits.",
+            [
+                ("Tribunal de Première Instance", "Informations sur les procédures judiciaires.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+    ],
+    "Économie": [
+        (
+            "Entrepreneuriat",
+            "Soutien aux startups et aux entreprises.",
+            [
+                ("Agence de Promotion des Investissements", "Accompagnement des investisseurs.", "https://apip.gov.gn"),
+            ]
+        ),
+        (
+            "Finance publique",
+            "Ressources sur la fiscalité et le budget national.",
+            [
+                ("Direction Générale des Impôts", "Services fiscaux et formulaires.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+    ],
+    "Tourisme": [
+        (
+            "Sites touristiques",
+            "Découvrir les destinations guinéennes.",
+            [
+                ("Office National du Tourisme", "Guide des attractions nationales.", "https://tourisme.gov.gn"),
+            ]
+        ),
+    ],
+    "Énergie": [
+        (
+            "Ressources énergétiques",
+            "Production et distribution d'électricité.",
+            [
+                ("EDG Guinée", "Informations sur l'électricité et les coupures.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+    ],
+    "Culture": [
+        (
+            "Patrimoine",
+            "Musées, arts et événements culturels.",
+            [
+                ("Musée National de Guinée", "Expositions et patrimoine culturel.", "https://www.gouvernement.gov.gn"),
+            ]
+        ),
+    ],
+}
+
+created_links = 0
+updated_links = 0
+created_subs = 0
+
+for category_name, sub_defs in category_resources.items():
+    cat = Category.objects.filter(name=category_name).first()
+    if not cat:
+        print(f"Catégorie '{category_name}' introuvable, impossible de créer les ressources.")
+        continue
+
+    for sub_name, sub_desc, links in sub_defs:
+        sub, sub_created = SubCategory.objects.get_or_create(
+            category=cat,
+            name=sub_name,
+            defaults={"description": sub_desc}
+        )
+        if sub_created:
+            created_subs += 1
+            print(f"Sous-domaine '{sub_name}' créé pour '{category_name}'")
+
+        for lname, ldesc, lurl in links:
+                rl, rl_created = ResourceLink.objects.update_or_create(
+                    subcategory=sub,
+                    name=lname,
+                    defaults={"description": ldesc, "url": lurl}
+                )
+                if rl_created:
+                    created_links += 1
+                    print(f"  Lien '{lname}' créé dans '{sub_name}'")
+                else:
+                    updated_links += 1
+                    print(f"  Lien '{lname}' mis à jour dans '{sub_name}'")
+
+print(f"\nSous-domaines créés: {created_subs}")
+print(f"Liens créés: {created_links}")
+print(f"Liens mis à jour: {updated_links}\n")
+
 ads_data = [
     {
-        "title": "Simplifiez vos démarches",
-        "subtitle": "Accédez au nouveau portail e-Gouvernement",
-        "image_url": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200",
+        "title": "Orange Guinée",
+        "subtitle": "Solutions mobiles, fibre et services numériques.",
+        "image_url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200",
         "order": 1
     },
     {
-        "title": "La Guinée Connectée",
-        "subtitle": "Le déploiement de la fibre optique continue",
-        "image_url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200",
+        "title": "Max IT",
+        "subtitle": "Informatique professionnelle et services cloud.",
+        "image_url": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200",
         "order": 2
+    },
+    {
+        "title": "La Guinée Connectée",
+        "subtitle": "Le déploiement de la fibre optique continue.",
+        "image_url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200",
+        "order": 3
     }
 ]
 
