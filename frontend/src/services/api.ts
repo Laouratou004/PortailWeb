@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// Use Vite environment variable in production, else keep relative path for local dev.
-export const API_URL = import.meta.env.VITE_API_URL ?? '/api/';
+// Use Vite env var if set, else hardcoded prod URL, else local proxy.
+const PROD_API = 'https://portailweb.onrender.com/api/';
+const ENV_API = import.meta.env.VITE_API_URL;
+export const API_URL = ENV_API || (import.meta.env.PROD ? PROD_API : '/api/');
 
 export const login = async (username: string, password: string) => {
     const response = await axios.post(`${API_URL}token/`, {
