@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { cachedGet } from '../../services/cache';
+import { API_URL } from '../../services/api';
 import { Book, Plus, LayoutGrid, Info, Search, Home as HomeIcon, ArrowRight, Layers } from 'lucide-react';
 
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600";
@@ -22,7 +23,7 @@ const Domain = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    cachedGet('/api/domains/categories/')
+    cachedGet(`${API_URL}domains/categories/`)
       .then((data: any[]) => setCategories(data))
       .catch((err: any) => console.error("Erreur Backend:", err));
   }, []);

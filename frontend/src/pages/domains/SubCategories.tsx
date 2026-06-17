@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ChevronRight, ArrowLeft, Layers, ExternalLink, FolderOpen, Loader2 } from 'lucide-react';
+import { API_URL } from '../../services/api';
 
 interface ResourceLink {
   id: number;
@@ -38,13 +39,12 @@ const SubCategories = () => {
     if (!categoryId) return;
 
     Promise.all([
-      axios.get(`/api/domains/categories/${categoryId}/`),
-      axios.get(`/api/domains/subcategories/?category_id=${categoryId}`)
+      axios.get(`${API_URL}domains/categories/${categoryId}/`),
+      axios.get(`${API_URL}domains/subcategories/?category_id=${categoryId}`)
     ])
       .then(([catRes, subRes]) => {
         setCategory(catRes.data);
         setSubCategories(subRes.data);
-        // Ouvre le premier sous-domaine par défaut
         if (subRes.data.length > 0) setActiveTab(subRes.data[0].id);
       })
       .catch(err => console.error("Erreur de chargement:", err))
