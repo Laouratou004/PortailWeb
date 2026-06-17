@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Use Vite env var if set, else hardcoded prod URL, else local proxy.
+// Use Vite env var if set, else hardcoded prod URL in prod build, else local proxy.
 const PROD_API = 'https://portailweb.onrender.com/api/';
 const ENV_API = import.meta.env.VITE_API_URL;
 export const API_URL = ENV_API || (import.meta.env.PROD ? PROD_API : '/api/');
