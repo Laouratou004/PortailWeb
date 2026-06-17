@@ -6,8 +6,10 @@ import {
   LogOut, CheckCircle2, Megaphone,
   Trash2, ImageIcon, Eye, EyeOff, Layers, Globe, ChevronDown, ChevronRight, AlertCircle, Pencil
 } from 'lucide-react';
+import { API_URL } from '../../services/api';
 
-const API = '/api';
+// API_URL ends with '/api/'; strip trailing slash so existing `${API}/path/` patterns stay valid
+const API = API_URL.replace(/\/$/, '');
 
 const adminApi = axios.create({ baseURL: API });
 adminApi.interceptors.request.use((config) => {
