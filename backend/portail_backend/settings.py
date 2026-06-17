@@ -197,6 +197,11 @@ if os.getenv('CORS_ALLOWED_ORIGINS'):
         origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',') if origin.strip()
     ]
 
+# Autorise toutes les URLs Vercel (production, branches, previews PR)
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+]
+
 # Autorise les cookies et headers d'authentification dans les requêtes cross-origin
 CORS_ALLOW_CREDENTIALS = True
 
