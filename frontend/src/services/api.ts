@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-// Use Vite env var if set, else hardcoded prod URL in prod build, else local proxy.
+// In prod, ALWAYS use the hardcoded backend URL (ignoring VITE_API_URL) to avoid
+// env-var typos breaking deploys. Normalize to a single trailing slash so callers
+// can safely do `${API_URL}path/` without producing double slashes.
 const PROD_API = 'https://portailweb.onrender.com/api/';
-const ENV_API = import.meta.env.VITE_API_URL;
-export const API_URL = ENV_API || (import.meta.env.PROD ? PROD_API : '/api/');
+const ENV_API = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+const RAW = import.meta.env.PROD ? PROD_API : (ENV_API ? ENV_API + '/' : '/api/');
+export const API_URL = RAW.replace(/\/+$/, '') + '/';
 
 export const login = async (username: string, password: string) => {
     const response = await axios.post(`${API_URL}token/`, {
