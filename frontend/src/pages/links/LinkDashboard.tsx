@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 import { API_URL } from '../../services/api';
 
-// API_URL ends with '/api/'; strip trailing slash so existing `${API}/path/` patterns stay valid
-const API = API_URL.replace(/\/$/, '');
+// API_URL ends with '/api/'; strip ALL trailing slashes so existing `${API}/path/` patterns stay valid
+const API = API_URL.replace(/\/+$/, '');
 
 const adminApi = axios.create({ baseURL: API });
 adminApi.interceptors.request.use((config) => {
